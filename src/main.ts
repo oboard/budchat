@@ -11,6 +11,7 @@ import {
   ForEach,
   vw,
   vh,
+  Theme,
 } from "buder";
 import "daisyui/dist/full.css";
 import "./style.css";
@@ -23,38 +24,45 @@ function send() {
   inputText.value = "";
 }
 
-Col([
-  ForEach(
-    messages,
-    (message) => {
-      return View([Text(message).class("chat-bubble")]).class("chat chat-end");
-    },
-    Col()
-      .expand.style({ width: percent(100), overflowY: "scroll" })
-      .padding(px(8))
-  ),
-  Row([
-    Input(inputText)
-      .class("input input-bordered")
-      .expand.event({
-        keydown: (e) => {
-          if (e.key === "Enter") {
-            send();
-          }
-        },
-      }),
-    Button("Send")
-      .event({
+const daisyUITheme = {
+  button: "btn",
+  input: "input",
+};
+
+function ChatBubble(message: string) {
+  return View([Text(message).class("chat-bubble")]).class(["chat", "chat-end"]);
+}
+
+Theme(
+  daisyUITheme,
+  Col([
+    ForEach(
+      messages,
+      (message) => ChatBubble(message),
+      Col()
+        .expand.style({ width: percent(100), overflowY: "scroll" })
+        .padding(px(8))
+    ),
+    Row([
+      Input(inputText)
+        .class("input-bordered")
+        .expand.event({
+          keydown: (e) => {
+            if (e.key === "Enter") {
+              send();
+            }
+          },
+        }),
+      Button("Send").event({
         click: () => {
           send();
         },
-      })
-      .class("btn"),
-  ]).style({ width: percent(100), gap: px(4) }),
-])
-  .style({ gap: px(8) })
-  .center.style({
-    width: vw(100),
-    height: vh(100),
-  })
-  .mount("#app");
+      }),
+    ]).style({ width: percent(100), gap: px(4) }),
+  ])
+    .style({ gap: px(8) })
+    .style({
+      width: vw(100),
+      height: vh(100),
+    })
+).mount("#app");
