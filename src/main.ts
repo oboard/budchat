@@ -1,6 +1,6 @@
 import {
   Button,
-  Col,
+  Column,
   Row,
   Text,
   Input,
@@ -12,15 +12,16 @@ import {
   vw,
   vh,
   Theme,
+  BuderState,
 } from "buder";
 import "daisyui/dist/full.css";
 import "./style.css";
 
 let inputText = State("");
-let messages = State([] as string[]);
+let messages = State([] as BuderState<string>[]);
 
 function send() {
-  messages.value = [...messages.value, inputText.value];
+  messages.value = [...messages.value, State(inputText.value)];
   inputText.value = "";
 }
 
@@ -29,21 +30,21 @@ const daisyUITheme = {
   input: "input",
 };
 
-function ChatBubble(message: string) {
-  return View([Text(message).class("chat-bubble")]).class(["chat", "chat-end"]);
+function ChatBubble(message: BuderState<string>) {
+  return View(Text(message).class("chat-bubble")).class(["chat", "chat-end"]);
 }
 
 Theme(
   daisyUITheme,
-  Col([
+  Column(
     ForEach(
       messages,
       (message) => ChatBubble(message),
-      Col()
+      Column()
         .expand.style({ width: percent(100), overflowY: "scroll" })
         .padding(px(8))
     ),
-    Row([
+    Row(
       Input(inputText)
         .class("input-bordered")
         .expand.event({
@@ -57,9 +58,9 @@ Theme(
         click: () => {
           send();
         },
-      }),
-    ]).style({ width: percent(100), gap: px(4) }),
-  ])
+      })
+    ).style({ width: percent(100), gap: px(4) })
+  )
     .style({ gap: px(8) })
     .style({
       width: vw(100),
